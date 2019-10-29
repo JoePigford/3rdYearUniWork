@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+clock seconds;
+
+int minutes;
+int hour;
+
+chan sec_tic;
+chan min_tic</declaration>
+	<template>
+		<name x="5" y="5">Seconds</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="-187" y="-93">
+			<name x="-246" y="-127">Seconds</name>
+			<label kind="invariant" x="-314" y="-102">Seconds &lt;= 60</label>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-85" y="-136">seconds &gt;= 60</label>
+			<label kind="synchronisation" x="-85" y="-119">sec_tic!</label>
+			<label kind="assignment" x="-85" y="-102">seconds = 0</label>
+			<nail x="-93" y="-144"/>
+			<nail x="-93" y="-42"/>
+		</transition>
+	</template>
+	<template>
+		<name>Minutes</name>
+		<location id="id1" x="-25" y="-136">
+			<name x="-42" y="-170">Minutes</name>
+		</location>
+		<location id="id2" x="-178" y="-68">
+			<committed/>
+		</location>
+		<init ref="id1"/>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-160" y="-85">min_tic!</label>
+			<nail x="-68" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-161" y="-170">minutes == 59</label>
+			<label kind="synchronisation" x="-160" y="-153">sec_tic?</label>
+			<label kind="assignment" x="-160" y="-136">minutes = 0</label>
+			<nail x="-178" y="-136"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="guard" x="34" y="-170">minutes &lt; 59</label>
+			<label kind="synchronisation" x="34" y="-153">sec_tic?</label>
+			<label kind="assignment" x="34" y="-136">minutes += 1</label>
+			<nail x="178" y="-136"/>
+			<nail x="178" y="-68"/>
+			<nail x="25" y="-68"/>
+		</transition>
+	</template>
+	<template>
+		<name>Hours</name>
+		<location id="id3" x="-144" y="-102">
+			<name x="-154" y="-136">Hours</name>
+		</location>
+		<init ref="id3"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-262" y="-136">hour == 12</label>
+			<label kind="synchronisation" x="-262" y="-119">min_tic?</label>
+			<label kind="assignment" x="-262" y="-102">hour = 0</label>
+			<nail x="-280" y="-102"/>
+			<nail x="-280" y="-42"/>
+			<nail x="-187" y="-42"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-76" y="-136">hour &lt; 12</label>
+			<label kind="synchronisation" x="-76" y="-119">min_tic?</label>
+			<label kind="assignment" x="-76" y="-102">hour += 1</label>
+			<nail x="17" y="-102"/>
+			<nail x="17" y="-42"/>
+			<nail x="-93" y="-42"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+p1 = Seconds();
+p2 = Minutes();
+p3 = Hours();
+// List one or more processes to be composed into a system.
+system p1, p2, p3;
+    </system>
+	<queries>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>

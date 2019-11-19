@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+
+chan insert_coin;
+meta int coin;
+typedef int [1,6] coins;
+
+chan select_item;
+meta int item;
+typedef int [1,6] items;
+
+chan vend;
+chan give_change;</declaration>
+	<template>
+		<name x="5" y="5">Person</name>
+		<declaration>// Place local declarations here.
+const int denomination[coins] = {1, 2, 5, 10, 20, 50};</declaration>
+		<location id="id0" x="0" y="0">
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="select" x="-51" y="-246">i: items</label>
+			<label kind="synchronisation" x="-51" y="-229">select_item!</label>
+			<label kind="assignment" x="-51" y="-212">item = i</label>
+			<nail x="-42" y="-42"/>
+			<nail x="-42" y="-195"/>
+			<nail x="-8" y="-195"/>
+			<nail x="0" y="-195"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-186" y="17">vend?</label>
+			<nail x="-42" y="34"/>
+			<nail x="-204" y="34"/>
+			<nail x="-204" y="0"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-25" y="195">give_change?</label>
+			<nail x="34" y="42"/>
+			<nail x="34" y="195"/>
+			<nail x="0" y="195"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="select" x="68" y="-76">d:coins</label>
+			<label kind="synchronisation" x="69" y="-59">insert_coin!</label>
+			<label kind="assignment" x="51" y="-42">coin = denomination[d]</label>
+			<nail x="51" y="-42"/>
+			<nail x="221" y="-42"/>
+			<nail x="221" y="0"/>
+		</transition>
+	</template>
+	<template>
+		<name>Vendingmachine</name>
+		<declaration>int total;
+int choice;
+
+const int price[7] = {0, 65, 70, 85, 120, 30, 100};
+int stock[7] = {0, 3, 2, 1, 2, 4, 2};</declaration>
+		<location id="id1" x="-34" y="-42">
+		</location>
+		<location id="id2" x="-238" y="93">
+			<committed/>
+		</location>
+		<location id="id3" x="-238" y="-178">
+		</location>
+		<init ref="id1"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-221" y="-280">stock[choice] == 0</label>
+			<label kind="assignment" x="-220" y="-263">choice = 0</label>
+			<nail x="-238" y="-263"/>
+			<nail x="25" y="-263"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-221" y="-195">stock[choice] &gt; 0</label>
+			<nail x="-51" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-220" y="-119">select_item?</label>
+			<label kind="assignment" x="-220" y="-102">choice = item</label>
+			<nail x="-76" y="-102"/>
+			<nail x="-238" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-220" y="-42">choice = 0</label>
+			<nail x="-238" y="-42"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-212" y="42">stock[choice] &gt; 0 &amp;&amp;
+total &gt;= price[choice]</label>
+			<label kind="synchronisation" x="-212" y="76">vend!</label>
+			<label kind="assignment" x="-212" y="93">stock[choice] -= 1, 
+total -= price[choice]</label>
+			<nail x="-51" y="93"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-16" y="59">total &gt; 0</label>
+			<label kind="synchronisation" x="-16" y="76">give_change!</label>
+			<label kind="assignment" x="-16" y="93">total = 0</label>
+			<nail x="-34" y="93"/>
+			<nail x="246" y="93"/>
+			<nail x="246" y="17"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="35" y="-110">insert_coin?</label>
+			<label kind="assignment" x="35" y="-93">total += coin</label>
+			<nail x="17" y="-93"/>
+			<nail x="229" y="-93"/>
+			<nail x="229" y="-42"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+user = Person();
+vender = Vendingmachine();
+// List one or more processes to be composed into a system.
+system user, vender;
+    </system>
+	<queries>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>

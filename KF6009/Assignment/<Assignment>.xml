@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan steamCheck;
+chan waterCheck;
+chan aquire;
+chan release;
+
+typedef int [1,2] systemState;
+
+const int On = 1;
+const int Off = 2;
+
+</declaration>
+	<template>
+		<name>Controller</name>
+		<location id="id0" x="-229" y="-263">
+		</location>
+		<init ref="id0"/>
+	</template>
+	<template>
+		<name>Pump</name>
+		<location id="id1" x="-170" y="-102">
+			<name x="-180" y="-136">Off</name>
+		</location>
+		<location id="id2" x="68" y="-102">
+			<name x="58" y="-136">On</name>
+		</location>
+		<init ref="id1"/>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-127" y="-17">release!</label>
+			<nail x="68" y="0"/>
+			<nail x="-170" y="0"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-127" y="-119">aquire!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Mutex</name>
+		<location id="id3" x="-238" y="-102">
+		</location>
+		<location id="id4" x="-34" y="-102">
+		</location>
+		<init ref="id3"/>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-204" y="-51">release?</label>
+			<nail x="-34" y="-34"/>
+			<nail x="-238" y="-34"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-204" y="-119">aquire?</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">WaterLevelSensor</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id5" x="365" y="136">
+		</location>
+		<init ref="id5"/>
+	</template>
+	<template>
+		<name>SteamSensor</name>
+		<location id="id6" x="-323" y="-161">
+		</location>
+		<init ref="id6"/>
+	</template>
+	<system>// Place template instantiations here.
+mutex = Mutex();
+p1 = Pump();
+p2 = Pump();
+
+// List one or more processes to be composed into a system.
+system mutex, p1, p2;
+    </system>
+	<queries>
+		<query>
+			<formula>A[] (p1.On imply p2.Off)</formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>

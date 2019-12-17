@@ -15,7 +15,7 @@ const int Off = 2;
 </declaration>
 	<template>
 		<name>Controller</name>
-		<location id="id0" x="-229" y="-263">
+		<location id="id0" x="-238" y="-306">
 		</location>
 		<init ref="id0"/>
 	</template>
@@ -27,7 +27,20 @@ const int Off = 2;
 		<location id="id2" x="68" y="-102">
 			<name x="58" y="-136">On</name>
 		</location>
+		<location id="id3" x="-408" y="-102">
+			<name x="-418" y="-136">Offline</name>
+		</location>
 		<init ref="id1"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<nail x="-408" y="0"/>
+			<nail x="-204" y="0"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id1"/>
@@ -43,36 +56,52 @@ const int Off = 2;
 	</template>
 	<template>
 		<name>Mutex</name>
-		<location id="id3" x="-238" y="-102">
+		<location id="id4" x="-238" y="-102">
 		</location>
-		<location id="id4" x="-34" y="-102">
+		<location id="id5" x="-34" y="-102">
 		</location>
-		<init ref="id3"/>
+		<init ref="id4"/>
 		<transition>
-			<source ref="id4"/>
-			<target ref="id3"/>
+			<source ref="id5"/>
+			<target ref="id4"/>
 			<label kind="synchronisation" x="-204" y="-51">release?</label>
 			<nail x="-34" y="-34"/>
 			<nail x="-238" y="-34"/>
 		</transition>
 		<transition>
-			<source ref="id3"/>
-			<target ref="id4"/>
+			<source ref="id4"/>
+			<target ref="id5"/>
 			<label kind="synchronisation" x="-204" y="-119">aquire?</label>
 		</transition>
 	</template>
 	<template>
 		<name x="5" y="5">WaterLevelSensor</name>
 		<declaration>// Place local declarations here.</declaration>
-		<location id="id5" x="365" y="136">
+		<location id="id6" x="340" y="-68">
 		</location>
-		<init ref="id5"/>
+		<location id="id7" x="136" y="0">
+		</location>
+		<init ref="id6"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="170" y="-85">waterCheck?</label>
+			<nail x="136" y="-68"/>
+		</transition>
 	</template>
 	<template>
 		<name>SteamSensor</name>
-		<location id="id6" x="-323" y="-161">
+		<location id="id8" x="-306" y="-170">
 		</location>
-		<init ref="id6"/>
+		<location id="id9" x="-544" y="-68">
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-510" y="-187">steamCheck?</label>
+			<nail x="-544" y="-170"/>
+		</transition>
 	</template>
 	<system>// Place template instantiations here.
 mutex = Mutex();

@@ -6,107 +6,94 @@ chan steamCheck;
 chan waterCheck;
 chan aquire;
 chan release;
-chan reply;
+chan waterReply;
+chan steamReply;
 
-typedef int [1,2] systemState;
+typedef int [1,2,3] pumpStatus;
 
 const int On = 1;
 const int Off = 2;
+const int Offline = 3;
 
+int pStatus[]
 </declaration>
 	<template>
 		<name>Controller</name>
 		<declaration>clock sensorTimer;
 
 int failCount = 0;</declaration>
-		<location id="id0" x="-1726" y="-884">
-			<name x="-1736" y="-918">Initial</name>
+		<location id="id0" x="-1054" y="-272">
+			<name x="-1064" y="-306">Initial</name>
 			<urgent/>
 		</location>
-		<location id="id1" x="-1726" y="-748">
-			<name x="-1896" y="-773">EmergencyShutdown</name>
+		<location id="id1" x="-1054" y="-136">
+			<name x="-1045" y="-161">EmergencyShutdown</name>
 		</location>
-		<location id="id2" x="-1462" y="-884">
-			<name x="-1539" y="-884">Standby</name>
+		<location id="id2" x="-782" y="-272">
+			<name x="-859" y="-272">Standby</name>
 		</location>
-		<location id="id3" x="-1564" y="-1020">
+		<location id="id3" x="-986" y="-476">
 			<urgent/>
 		</location>
-		<location id="id4" x="-1360" y="-1020">
+		<location id="id4" x="-578" y="-476">
 			<urgent/>
 		</location>
-		<location id="id5" x="-1148" y="-1020">
-			<label kind="invariant" x="-1131" y="-1028">sensorTimer &lt;= 5</label>
+		<location id="id5" x="-306" y="-476">
+			<label kind="invariant" x="-289" y="-493">sensorTimer &lt;= 5</label>
 		</location>
-		<location id="id6" x="-1760" y="-1020">
-			<label kind="invariant" x="-1879" y="-1054">sensorTimer &lt;= 5</label>
+		<location id="id6" x="-1360" y="-476">
+			<label kind="invariant" x="-1487" y="-510">sensorTimer &lt;= 5</label>
 		</location>
-		<branchpoint id="id7" x="-1462" y="-952">
+		<branchpoint id="id7" x="-782" y="-476">
 		</branchpoint>
 		<init ref="id0"/>
 		<transition>
 			<source ref="id5"/>
 			<target ref="id1"/>
-			<label kind="guard" x="-1284" y="-1224">sensorTimer &gt;= 5
-failCount &gt;= 5</label>
-			<nail x="-1148" y="-1190"/>
-			<nail x="-1930" y="-1190"/>
-			<nail x="-1930" y="-748"/>
+			<label kind="guard" x="-1513" y="-663">sensorTimer &gt;= 5 and failCount &gt;= 5</label>
+			<nail x="-306" y="-646"/>
+			<nail x="-1530" y="-646"/>
+			<nail x="-1530" y="-136"/>
 		</transition>
 		<transition>
 			<source ref="id6"/>
 			<target ref="id1"/>
-			<label kind="guard" x="-1913" y="-1020">sensorTimer &gt;= 5
-failCount &gt;= 5</label>
-			<nail x="-1930" y="-1020"/>
-			<nail x="-1930" y="-748"/>
+			<label kind="guard" x="-1360" y="-161">sensorTimer &gt;= 5 and failCount &gt;= 5</label>
+			<nail x="-1360" y="-136"/>
 		</transition>
 		<transition>
 			<source ref="id5"/>
 			<target ref="id4"/>
-			<label kind="guard" x="-1352" y="-1156">sensorTimer &gt;= 5
-failCount &lt; 5</label>
-			<label kind="assignment" x="-1352" y="-1122">failCount += 1</label>
-			<nail x="-1224" y="-1122"/>
-			<nail x="-1360" y="-1122"/>
-		</transition>
-		<transition>
-			<source ref="id5"/>
-			<target ref="id2"/>
-			<label kind="synchronisation" x="-1182" y="-1003">reply?</label>
-			<label kind="assignment" x="-1224" y="-986">failCount = 0</label>
-		</transition>
-		<transition>
-			<source ref="id6"/>
-			<target ref="id2"/>
-			<label kind="synchronisation" x="-1768" y="-1003">reply?</label>
-			<label kind="assignment" x="-1776" y="-986">failCount = 0</label>
+			<label kind="guard" x="-629" y="-595">sensorTimer &gt;= 5 and failCount &lt; 5</label>
+			<label kind="assignment" x="-570" y="-578">failCount += 1</label>
+			<nail x="-374" y="-578"/>
+			<nail x="-442" y="-578"/>
+			<nail x="-578" y="-578"/>
 		</transition>
 		<transition>
 			<source ref="id6"/>
 			<target ref="id3"/>
-			<label kind="guard" x="-1692" y="-1156">sensorTimer &gt;= 5
-failCount &lt; 5</label>
-			<label kind="assignment" x="-1691" y="-1122">failCount += 1</label>
-			<nail x="-1700" y="-1122"/>
-			<nail x="-1564" y="-1122"/>
+			<label kind="guard" x="-1283" y="-595">sensorTimer &gt;= 5 and failCount &lt; 5</label>
+			<label kind="assignment" x="-1282" y="-578">failCount += 1</label>
+			<nail x="-1291" y="-578"/>
+			<nail x="-986" y="-578"/>
 		</transition>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id6"/>
-			<label kind="synchronisation" x="-1682" y="-1037">steamCheck!</label>
-			<label kind="assignment" x="-1700" y="-1020">sensorTimer = 0</label>
+			<label kind="synchronisation" x="-1273" y="-493">steamCheck!</label>
+			<label kind="assignment" x="-1291" y="-476">sensorTimer = 0</label>
 		</transition>
 		<transition>
 			<source ref="id4"/>
 			<target ref="id5"/>
-			<label kind="synchronisation" x="-1342" y="-1037">waterCheck!</label>
-			<label kind="assignment" x="-1342" y="-1020">sensorTimer = 0</label>
+			<label kind="synchronisation" x="-492" y="-493">waterCheck!</label>
+			<label kind="assignment" x="-492" y="-476">sensorTimer = 0</label>
 		</transition>
 		<transition>
 			<source ref="id7"/>
 			<target ref="id3"/>
-			<label kind="probability" x="-1479" y="-986">1</label>
+			<label kind="probability" x="-798" y="-382">1</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
@@ -115,7 +102,7 @@ failCount &lt; 5</label>
 		<transition>
 			<source ref="id7"/>
 			<target ref="id4"/>
-			<label kind="probability" x="-1453" y="-986">1</label>
+			<label kind="probability" x="-772" y="-382">1</label>
 		</transition>
 		<transition>
 			<source ref="id1"/>
@@ -127,185 +114,378 @@ failCount &lt; 5</label>
 		</transition>
 	</template>
 	<template>
-		<name>Pump</name>
-		<location id="id8" x="-170" y="-102">
-			<name x="-180" y="-136">Off</name>
+		<name>ContV1</name>
+		<declaration>clock sensorTimer;
+
+int failCount = 0;</declaration>
+		<location id="id8" x="-1317" y="-535">
+			<name x="-1327" y="-569">Initial</name>
+			<urgent/>
 		</location>
-		<location id="id9" x="68" y="-102">
-			<name x="58" y="-136">On</name>
+		<location id="id9" x="-1317" y="-399">
+			<name x="-1487" y="-424">EmergencyShutdown</name>
 		</location>
-		<location id="id10" x="-408" y="-102">
-			<name x="-418" y="-136">Offline</name>
+		<location id="id10" x="-1053" y="-535">
+			<name x="-1130" y="-535">Standby</name>
 		</location>
+		<location id="id11" x="-1155" y="-671">
+			<urgent/>
+		</location>
+		<location id="id12" x="-951" y="-671">
+			<urgent/>
+		</location>
+		<location id="id13" x="-739" y="-671">
+			<label kind="invariant" x="-722" y="-679">sensorTimer &lt;= 5</label>
+		</location>
+		<location id="id14" x="-1351" y="-671">
+			<label kind="invariant" x="-1470" y="-705">sensorTimer &lt;= 5</label>
+		</location>
+		<branchpoint id="id15" x="-1053" y="-603">
+		</branchpoint>
 		<init ref="id8"/>
 		<transition>
+			<source ref="id13"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-1010" y="-858">sensorTimer &gt;= 5 and failCount &gt;= 5</label>
+			<nail x="-739" y="-841"/>
+			<nail x="-1521" y="-841"/>
+			<nail x="-1521" y="-399"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-1631" y="-688">sensorTimer &gt;= 5 and failCount &gt;= 5</label>
+			<nail x="-1521" y="-671"/>
+			<nail x="-1521" y="-399"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-1002" y="-790">sensorTimer &gt;= 5 and failCount &lt; 5</label>
+			<label kind="assignment" x="-943" y="-773">failCount += 1</label>
+			<nail x="-815" y="-773"/>
+			<nail x="-951" y="-773"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-773" y="-654">waterReply?</label>
+			<label kind="assignment" x="-815" y="-637">failCount = 0</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-1402" y="-654">steamReply?</label>
+			<label kind="assignment" x="-1367" y="-637">failCount = 0</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id11"/>
+			<label kind="guard" x="-1342" y="-790">sensorTimer &gt;= 5 and failCount &lt; 5</label>
+			<label kind="assignment" x="-1282" y="-773">failCount += 1</label>
+			<nail x="-1291" y="-773"/>
+			<nail x="-1155" y="-773"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-1273" y="-688">steamCheck!</label>
+			<label kind="assignment" x="-1291" y="-671">sensorTimer = 0</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-933" y="-688">waterCheck!</label>
+			<label kind="assignment" x="-933" y="-671">sensorTimer = 0</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id11"/>
+			<label kind="probability" x="-1070" y="-637">1</label>
+		</transition>
+		<transition>
 			<source ref="id10"/>
+			<target ref="id15"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id12"/>
+			<label kind="probability" x="-1044" y="-637">1</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
 			<target ref="id8"/>
-			<nail x="-408" y="0"/>
-			<nail x="-204" y="0"/>
 		</transition>
 		<transition>
 			<source ref="id8"/>
 			<target ref="id10"/>
 		</transition>
+	</template>
+	<template>
+		<name>Pump</name>
+		<parameter>P</parameter>
+		<location id="id16" x="-170" y="-102">
+			<name x="-180" y="-136">Off</name>
+		</location>
+		<location id="id17" x="68" y="-102">
+			<name x="58" y="-136">On</name>
+		</location>
+		<location id="id18" x="-408" y="-102">
+			<name x="-418" y="-136">Offline</name>
+		</location>
+		<init ref="id16"/>
 		<transition>
-			<source ref="id9"/>
-			<target ref="id8"/>
-			<label kind="synchronisation" x="-127" y="-17">release!</label>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-152" y="-17">release!</label>
+			<label kind="assignment" x="-152" y="0">pStatus = Off</label>
 			<nail x="68" y="0"/>
 			<nail x="-170" y="0"/>
 		</transition>
 		<transition>
-			<source ref="id8"/>
-			<target ref="id9"/>
-			<label kind="synchronisation" x="-127" y="-119">aquire!</label>
-			<nail x="-51" y="-102"/>
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-152" y="-119">aquire!</label>
+			<label kind="assignment" x="-152" y="-102">pStatus = On</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id16"/>
+			<label kind="assignment" x="-391" y="0">pStatus = Off</label>
+			<nail x="-408" y="0"/>
+			<nail x="-204" y="0"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id18"/>
+			<label kind="assignment" x="-390" y="-102">pStatus = Offline</label>
 		</transition>
 	</template>
 	<template>
 		<name>Mutex</name>
-		<location id="id11" x="-238" y="-102">
+		<location id="id19" x="-238" y="-102">
 		</location>
-		<location id="id12" x="-34" y="-102">
+		<location id="id20" x="-34" y="-102">
 		</location>
-		<init ref="id11"/>
+		<init ref="id19"/>
 		<transition>
-			<source ref="id12"/>
-			<target ref="id11"/>
+			<source ref="id20"/>
+			<target ref="id19"/>
 			<label kind="synchronisation" x="-204" y="-51">release?</label>
 			<nail x="-34" y="-34"/>
 			<nail x="-238" y="-34"/>
 		</transition>
 		<transition>
-			<source ref="id11"/>
-			<target ref="id12"/>
+			<source ref="id19"/>
+			<target ref="id20"/>
 			<label kind="synchronisation" x="-204" y="-119">aquire?</label>
 		</transition>
 	</template>
 	<template>
 		<name x="5" y="5">WaterLevelSensor</name>
 		<declaration>// Place local declarations here.</declaration>
-		<location id="id13" x="102" y="-340">
+		<location id="id21" x="102" y="-340">
 			<name x="42" y="-331">Standby</name>
 		</location>
-		<location id="id14" x="-136" y="-340">
+		<location id="id22" x="-136" y="-340">
 			<urgent/>
 		</location>
-		<location id="id15" x="-204" y="-510">
+		<location id="id23" x="-204" y="-510">
 			<name x="-214" y="-544">Broken</name>
 			<urgent/>
 		</location>
-		<location id="id16" x="-204" y="-170">
-			<name x="-263" y="-178">Reply</name>
+		<location id="id24" x="-204" y="-272">
+			<name x="-255" y="-297">Test</name>
+			<urgent/>
 		</location>
-		<location id="id17" x="204" y="-340">
+		<location id="id25" x="204" y="-340">
 			<name x="194" y="-374">Initial</name>
 			<urgent/>
 		</location>
-		<branchpoint id="id18" x="-204" y="-340">
+		<location id="id26" x="-102" y="-204">
+			<name x="-127" y="-238">TooHigh</name>
+			<urgent/>
+		</location>
+		<location id="id27" x="-204" y="-102">
+			<name x="-195" y="-136">LevelOK</name>
+			<urgent/>
+		</location>
+		<location id="id28" x="-306" y="-204">
+			<name x="-331" y="-238">TooLow</name>
+			<urgent/>
+		</location>
+		<branchpoint id="id29" x="-204" y="-204">
 		</branchpoint>
-		<init ref="id17"/>
+		<branchpoint id="id30" x="-204" y="-340">
+		</branchpoint>
+		<init ref="id25"/>
 		<transition>
-			<source ref="id18"/>
-			<target ref="id16"/>
+			<source ref="id28"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-272" y="-85">waterReply!</label>
+			<nail x="-306" y="-68"/>
+			<nail x="102" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-187" y="-119">waterReply!</label>
+			<nail x="102" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-84" y="-221">waterReply!</label>
+			<nail x="102" y="-204"/>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id28"/>
+			<label kind="probability" x="-221" y="-229">1</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id27"/>
+			<label kind="probability" x="-204" y="-195">8</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id26"/>
+			<label kind="probability" x="-195" y="-229">1</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id29"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id24"/>
 			<label kind="probability" x="-221" y="-331">3</label>
 		</transition>
 		<transition>
-			<source ref="id18"/>
-			<target ref="id15"/>
+			<source ref="id30"/>
+			<target ref="id23"/>
 			<label kind="probability" x="-221" y="-365">1</label>
 		</transition>
 		<transition>
-			<source ref="id14"/>
-			<target ref="id18"/>
+			<source ref="id22"/>
+			<target ref="id30"/>
 		</transition>
 		<transition>
-			<source ref="id17"/>
-			<target ref="id13"/>
+			<source ref="id25"/>
+			<target ref="id21"/>
 		</transition>
 		<transition>
-			<source ref="id15"/>
-			<target ref="id13"/>
+			<source ref="id23"/>
+			<target ref="id21"/>
 			<nail x="102" y="-510"/>
 		</transition>
 		<transition>
-			<source ref="id16"/>
-			<target ref="id13"/>
-			<label kind="synchronisation" x="-161" y="-187">reply!</label>
-			<nail x="102" y="-170"/>
-		</transition>
-		<transition>
-			<source ref="id13"/>
-			<target ref="id14"/>
+			<source ref="id21"/>
+			<target ref="id22"/>
 			<label kind="synchronisation" x="-68" y="-357">waterCheck?</label>
 			<nail x="-102" y="-340"/>
 		</transition>
 	</template>
 	<template>
 		<name>SteamSensor</name>
-		<location id="id19" x="-408" y="-272">
+		<location id="id31" x="-408" y="-272">
 			<name x="-476" y="-263">Standby</name>
 		</location>
-		<location id="id20" x="-680" y="-272">
+		<location id="id32" x="-680" y="-272">
 			<urgent/>
 		</location>
-		<location id="id21" x="-306" y="-272">
+		<location id="id33" x="-306" y="-272">
 			<name x="-316" y="-306">Initial</name>
 			<urgent/>
 		</location>
-		<location id="id22" x="-748" y="-408">
+		<location id="id34" x="-748" y="-408">
 			<name x="-816" y="-416">Broken</name>
 			<urgent/>
 		</location>
-		<location id="id23" x="-748" y="-136">
-			<name x="-799" y="-144">Reply</name>
+		<location id="id35" x="-748" y="-136">
+			<name x="-799" y="-144">Test</name>
+			<urgent/>
 		</location>
-		<branchpoint id="id24" x="-748" y="-272">
+		<location id="id36" x="-646" y="-68">
+			<name x="-671" y="-51">TooHigh</name>
+			<urgent/>
+		</location>
+		<location id="id37" x="-748" y="34">
+			<name x="-773" y="51">RateOK</name>
+			<urgent/>
+		</location>
+		<branchpoint id="id38" x="-748" y="-68">
 		</branchpoint>
-		<init ref="id21"/>
+		<branchpoint id="id39" x="-748" y="-272">
+		</branchpoint>
+		<init ref="id33"/>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id23"/>
+			<source ref="id37"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-731" y="17">waterReply!</label>
+			<nail x="-408" y="34"/>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-628" y="-85">steamReply!</label>
+			<nail x="-408" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id37"/>
+			<label kind="probability" x="-765" y="-59">4</label>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id36"/>
+			<label kind="probability" x="-739" y="-85">1</label>
+		</transition>
+		<transition>
+			<source ref="id35"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id35"/>
 			<label kind="probability" x="-765" y="-263">3</label>
 		</transition>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id22"/>
+			<source ref="id39"/>
+			<target ref="id34"/>
 			<label kind="probability" x="-765" y="-297">1</label>
 		</transition>
 		<transition>
-			<source ref="id20"/>
-			<target ref="id24"/>
+			<source ref="id32"/>
+			<target ref="id39"/>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id19"/>
-			<label kind="synchronisation" x="-714" y="-153">reply!</label>
-			<nail x="-408" y="-136"/>
-		</transition>
-		<transition>
-			<source ref="id22"/>
-			<target ref="id19"/>
+			<source ref="id34"/>
+			<target ref="id31"/>
 			<nail x="-408" y="-408"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
-			<target ref="id19"/>
+			<source ref="id33"/>
+			<target ref="id31"/>
 		</transition>
 		<transition>
-			<source ref="id19"/>
-			<target ref="id20"/>
+			<source ref="id31"/>
+			<target ref="id32"/>
 			<label kind="synchronisation" x="-612" y="-289">steamCheck?</label>
 			<nail x="-646" y="-272"/>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
+ctrl = Controller();
+steam = SteamSensor();
+water = WaterLevelSensor();
 mutex = Mutex();
 p1 = Pump();
 p2 = Pump();
 
 // List one or more processes to be composed into a system.
-system mutex, p1, p2;
+system ctrl, steam, water;//, mutex, p1, p2;
     </system>
 	<queries>
 		<query>
